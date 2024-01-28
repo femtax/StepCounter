@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">StepCounter</string>
+    <string name="data_from_the_step_sensor">Data from the step sensor:</string>
+    <string name="data_from_the_magnetometer_sensor">Data from the magnetometer sensor:</string>
+    <string name="data_from_the_gyroscope_sensor">Data from the gyroscope sensor:</string>
+    <string name="data_from_the_accelerometer_sensor">Data from the accelerometer sensor:</string>
+</resources>
