@@ -5,6 +5,8 @@
 
     <!-- Added by Andrii -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 
     <!-- TODO: Add Icon -->
     <application
