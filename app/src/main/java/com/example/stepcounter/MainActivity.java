@@ -12,16 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.Manifest;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
+
 
 public class MainActivity extends Activity implements SensorEventListener {
 
@@ -37,7 +33,6 @@ public class MainActivity extends Activity implements SensorEventListener {
     private TextView textViewStep;
     private static final int REQUEST_CODE = 1; // Any integer
     long startTime;
-
     File file;
 
     // Initialize activity and layout
@@ -68,65 +63,68 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
         if (accelerometer != null) {
-            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            // accelerometer, SensorManager.SENSOR_DELAY_FASTEST app is dead
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
         } else {
             textViewAccelerometer.setText("Accelerometer not supported on this device.");
         }
 
         if (gyroscope != null) {
-            sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+            // gyroscope, SensorManager.SENSOR_DELAY_FASTEST app is dead
+            sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_GAME);
         } else {
             textViewGyroscope.setText("Gyroscope not supported on this device.");
         }
 
         if (magnetometer != null) {
-            sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+            // magnetometer, SensorManager.SENSOR_DELAY_FASTEST app is dead
+            sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_GAME);
         } else {
             textViewMagnetometer.setText("Magnetometer not supported on this device.");
         }
 
         if (stepSensor != null) {
-            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI);
+            // stepSensor, SensorManager.SENSOR_DELAY_FASTEST app is ok
+            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_GAME);
         } else {
             textViewStep.setText("Step sensor not supported on this device.");
         }
 
         EditText editText = findViewById(R.id.editText);
-        Button button = findViewById(R.id.button);
+        Button buttonForComments = findViewById(R.id.buttonForComments);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        buttonForComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String text = editText.getText().toString();
-                try (FileOutputStream fos = new FileOutputStream(file, true)) {
-                    fos.write((text + "\n").getBytes());
+                if (!text.isEmpty()) {
+                    FilesManager.writeToFile(getApplicationContext(), "SensorData.txt", "// " + text);
+                    LoggerManager.writeToLogFile(getApplicationContext(), "Added comment: " + text);
                     editText.setText("");
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         });
 
-        /*
-        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        try (FileOutputStream fos = new FileOutputStream(file, true)) {
-            for (Sensor sensor : sensorList) {
-                String sensorInfo = "Name: " + sensor.getName() +
-                        ", Type: " + getSensorName(sensor.getType()) +
-                        ", Vendor: " + sensor.getVendor() +
-                        ", Version: " + sensor.getVersion() +
-                        ", Power: " + sensor.getPower() + "mA" +
-                        ", Resolution: " + sensor.getResolution() +
-                        ", Max Range: " + sensor.getMaximumRange() +
-                        ", Min Delay: " + sensor.getMinDelay() +
-                        ", Wakeup: " + sensor.isWakeUpSensor() + "\n";
-                fos.write(sensorInfo.getBytes());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Button buttonForSendServer = findViewById(R.id.buttonForSendServer);
 
-        */
+        buttonForSendServer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                String filePath = getFilesDir() + "/SensorData.txt";
+//                String serverUrl = "http://217.76.54.178:5000/submit-data";
+//
+//                // Читаем данные из файла
+//                String data = Fil.readFile(filePath);
+//
+//                // Отправляем данные, если они есть
+//                if (!data.isEmpty()) {
+//                    ServerManager.sendPostRequest(serverUrl, data);
+//                }
+//
+//                // Очищаем файл
+//                ServerManager.clearFile(filePath);
+            }
+        });
     }
 
     @Override
@@ -161,15 +159,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             textViewStep.setText(event.toString());
         }
 
-        try (FileOutputStream fos = new FileOutputStream(file, true)) {
-            String data = (System.currentTimeMillis() - startTime) + ", " + getSensorName(event.sensor.getType()) + ", " + Arrays.toString(event.values) + "\n";
-            fos.write(data.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-            // TODO: catch
-        }
-
-
+        String data = (System.currentTimeMillis() - startTime) + ", " + SensorsManager.getSensorName(event.sensor.getType()) + ", " + Arrays.toString(event.values);
+        FilesManager.writeToFile(getApplicationContext(), "SensorData.txt", data);
     }
 
     @Override
@@ -195,33 +186,4 @@ public class MainActivity extends Activity implements SensorEventListener {
         super.onPause();
         sensorManager.unregisterListener(this);
     }
-
-    private String getSensorName(int sensorType) {
-        switch (sensorType) {
-            case Sensor.TYPE_ACCELEROMETER:
-                return "ACCELEROMETER";
-            case Sensor.TYPE_GYROSCOPE:
-                return "GYROSCOPE";
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                return "MAGNETIC_FIELD";
-            case Sensor.TYPE_STEP_COUNTER:
-                return "STEP_COUNTER";
-            case Sensor.TYPE_LIGHT:
-                return "LIGHT";
-            case Sensor.TYPE_PRESSURE:
-                return "PRESSURE";
-            case Sensor.TYPE_PROXIMITY:
-                return "PROXIMITY";
-            case Sensor.TYPE_GRAVITY:
-                return "GRAVITY";
-            case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                return "AMBIENT_TEMPERATURE";
-            // Додайте інші типи сенсорів за потребою
-            default:
-                return "UNKNOWN_SENSOR";
-        }
-    }
-
-
-
 }
