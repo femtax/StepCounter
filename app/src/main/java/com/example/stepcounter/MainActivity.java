@@ -15,8 +15,9 @@ import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import java.io.File;
+import org.json.JSONArray;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends Activity implements SensorEventListener {
@@ -33,14 +34,14 @@ public class MainActivity extends Activity implements SensorEventListener {
     private TextView textViewStep;
     private static final int REQUEST_CODE = 1; // Any integer
     long startTime;
-    File file;
+//    File file;
 
     // Initialize activity and layout
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        file = new File(getExternalFilesDir(null), "SensorData.txt");
+//        file = new File(getExternalFilesDir(null), "SensorData.txt");
 
         textViewAccelerometer = findViewById(R.id.textViewAccelerometer);
         textViewGyroscope = findViewById(R.id.textViewGyroscope);
@@ -110,21 +111,21 @@ public class MainActivity extends Activity implements SensorEventListener {
         buttonForSendServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                String filePath = getFilesDir() + "/SensorData.txt";
-//                String serverUrl = "http://217.76.54.178:5000/submit-data";
-//
-//                // Читаем данные из файла
-//                String data = Fil.readFile(filePath);
-//
-//                // Отправляем данные, если они есть
-//                if (!data.isEmpty()) {
-//                    ServerManager.sendPostRequest(serverUrl, data);
-//                }
-//
-//                // Очищаем файл
-//                ServerManager.clearFile(filePath);
+                String serverUrl = "http://217.76.54.178:5000/submit-data";
+                List<String> lines = FilesManager.readLinesAndDelete(getApplicationContext(), "SensorData.txt", 25);
+
+                if (!lines.isEmpty()) {
+                    JSONArray jsonArray = new JSONArray();
+                    for (String line : lines) {
+                        jsonArray.put(line);
+                    }
+
+                    String jsonBody = "{\"data\": " + jsonArray.toString() + "}";
+                    ServerManager.sendPostRequest(getApplicationContext(), serverUrl, jsonBody);
+                }
             }
         });
+
     }
 
     @Override
@@ -161,6 +162,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         String data = (System.currentTimeMillis() - startTime) + ", " + SensorsManager.getSensorName(event.sensor.getType()) + ", " + Arrays.toString(event.values);
         FilesManager.writeToFile(getApplicationContext(), "SensorData.txt", data);
+
     }
 
     @Override
