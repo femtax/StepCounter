@@ -7,20 +7,29 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import org.json.JSONArray;
+import java.util.Arrays;
+import java.util.List;
 
 public class ServerManager {
 
 
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final OkHttpClient client = new OkHttpClient();
+
+    public static String prepareJsonBody(List<String> lines) {
+        if (lines == null || lines.isEmpty()) {
+            return null;
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        for (String line : lines) {
+            jsonArray.put(line);
+        }
+
+        return "{\"data\": " + jsonArray.toString() + "}";
+    }
+
 
     public static void sendPostRequest(Context context, String url, String jsonBody) {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -33,7 +42,6 @@ public class ServerManager {
                 .build();
 
         LoggerManager.writeToLogFile(context, "Sending POST request to " + url);
-        LoggerManager.writeToLogFile(context, "Request body: " + jsonBody);
 
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override

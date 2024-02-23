@@ -26,21 +26,20 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/accelerometerUnused"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_from_the_accelerometer_sensor"
-            android:orientation="vertical"
-            android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/textViewAccelerometer"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="255dp"
             android:layout_height="wrap_content"
-            android:text=""
-            android:orientation="vertical"
-            android:textSize="18sp" />
+            android:hint="Enter text"
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/buttonForComments"
+            android:layout_width="132dp"
+            android:layout_height="wrap_content"
+            android:text="Save note" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -50,20 +49,12 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/gyroscopeUnused"
+        <Button
+            android:id="@+id/buttonForSendServer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/data_from_the_gyroscope_sensor"
-            android:orientation="vertical"
-            android:textSize="18sp" />
+            android:text="Synchro" />
 
-        <TextView
-            android:id="@+id/textViewGyroscope"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,44 +63,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/magnetometerUnused"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_from_the_magnetometer_sensor"
-            android:orientation="vertical"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/textViewMagnetometer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/block4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/stepUnused"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_from_the_step_sensor"
-            android:orientation="vertical"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/textViewStep"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="18sp" />
     </LinearLayout>
 
 
@@ -121,25 +74,6 @@
         android:orientation="vertical"
         >
 
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter text"/>
-
-        <Button
-            android:id="@+id/buttonForComments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save note"/>
-
-
-        <Button
-            android:id="@+id/buttonForSendServer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Synchro"/>
-
     </LinearLayout>
 
     <LinearLayout
@@ -147,8 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
     </LinearLayout>
 
