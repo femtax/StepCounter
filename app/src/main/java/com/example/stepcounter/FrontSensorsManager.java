@@ -1,18 +1,23 @@
 package com.example.stepcounter;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import java.io.File;
+
 import java.util.List;
 
-public class SensorsManager {
-    private SensorManager sensorManager;
+// This class is responsible for managing the sensors.
+public class FrontSensorsManager {
+    // The sensor manager
+    private final SensorManager sensorManager;
 
-    public SensorsManager(SensorsManager sensorsManager, File file) {
+    // Constructor
+    public FrontSensorsManager(SensorManager sensorManager) {
         this.sensorManager = sensorManager;
     }
 
-    public static String getSensorName(int sensorType) {
+    // This method returns the list of available sensors.
+    public static String getSensorName(Context context, int sensorType) {
         switch (sensorType) {
             case Sensor.TYPE_ACCELEROMETER:
                 return "ACCELEROMETER";
@@ -33,16 +38,19 @@ public class SensorsManager {
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
                 return "AMBIENT_TEMPERATURE";
             default:
+                LoggerManager.writeToLogFile(context, "Unknown sensor type: " + sensorType);
                 return "UNKNOWN_SENSOR";
         }
     }
 
+    // This method writes the details of the sensors to a file.
+    @SuppressWarnings("unused")
     public void writeSensorDetailsToFile(Context context, String fileName) {
         List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
         StringBuilder sensorDetails = new StringBuilder();
         for (Sensor sensor : sensorList) {
             String sensorInfo = "Name: " + sensor.getName() +
-                    ", Type: " + getSensorName(sensor.getType()) +
+                    ", Type: " + getSensorName(context, sensor.getType()) +
                     ", Vendor: " + sensor.getVendor() +
                     ", Version: " + sensor.getVersion() +
                     ", Power: " + sensor.getPower() + "mA" +

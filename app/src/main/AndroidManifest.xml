@@ -5,12 +5,12 @@
 
     <!-- Added by Andrii -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-
-
-    <!-- TODO: Add Icon -->
     <application
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
@@ -20,8 +20,11 @@
     android:theme="@style/Theme.StepCounter"
     android:usesCleartextTraffic="true"
     tools:targetApi="31">
-
-    <activity android:name=".MainActivity"
+        <service
+            android:name=".BackSensorsManager"
+            android:enabled="true"
+            android:exported="false" />
+        <activity android:name=".MainActivity"
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
