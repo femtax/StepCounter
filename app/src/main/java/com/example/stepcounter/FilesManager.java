@@ -1,5 +1,7 @@
 package com.example.stepcounter;
+
 import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,12 +11,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 // This class is responsible for reading and writing files.
 public class FilesManager {
     
     // Lock to prevent concurrent file access
     private static final ReentrantLock lock = new ReentrantLock();
+    // ??
+    private static final Logger LOGGER = Logger.getLogger(FilesManager.class.getName());
+
 
     //  This method writes a message to a file.
     public static void writeToFile(Context context, String fileName, String message) {
@@ -40,7 +48,7 @@ public class FilesManager {
             }
         } catch (IOException e) {
             LoggerManager.writeToLogFile(context, "Error writing to file: " + e.getMessage());
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             //  Unlock the file
             lock.unlock();
@@ -93,7 +101,7 @@ public class FilesManager {
                     fw.close();
                 } catch (IOException e) {
                     LoggerManager.writeToLogFile(context, "Error closing file: " + e.getMessage());
-                    e.printStackTrace();
+                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
         }
@@ -126,7 +134,7 @@ public class FilesManager {
                 stringBuilder.append(line).append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         
         // Write the remaining lines back to the file
@@ -134,7 +142,7 @@ public class FilesManager {
             writer.write(stringBuilder.toString());
         } catch (IOException e) {
             LoggerManager.writeToLogFile(context, "Error writing to file: " + e.getMessage());
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return firstLine;
@@ -168,7 +176,7 @@ public class FilesManager {
                 }
             } catch (IOException e) {
                 LoggerManager.writeToLogFile(context, "Error reading file: " + e.getMessage());
-                e.printStackTrace();
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
 
             // Write the remaining lines back to the file
@@ -178,13 +186,45 @@ public class FilesManager {
                 }
             } catch (IOException e) {
                 LoggerManager.writeToLogFile(context, "Error writing to file: " + e.getMessage());
-                e.printStackTrace();
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
 
             return linesToSend;
         } finally {
 
             // Unlock the file
+            lock.unlock();
+        }
+    }
+
+    public static void createBackUp(Context context, String fileName) {
+        lock.lock();
+        try {
+            File originalFile = new File(context.getExternalFilesDir(null), fileName);
+            File backupFile = new File(context.getExternalFilesDir(null), "SensorDataBackup.txt");
+
+            if (originalFile.exists()) {
+                //
+                try (BufferedReader reader = new BufferedReader(new FileReader(originalFile));
+                     BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        writer.write(line);
+                        writer.newLine();
+                    }
+                }
+
+                //
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(originalFile))) {
+                    writer.write("");
+                }
+            } else {
+                LoggerManager.writeToLogFile(context, "Original file does not exist: " + originalFile.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            LoggerManager.writeToLogFile(context, "Error in createBackup: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
             lock.unlock();
         }
     }

@@ -28,49 +28,142 @@
         android:gravity="center_horizontal">
 
 
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="255dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter text"
-            android:minHeight="48dp" />
-
-        <Button
-            android:id="@+id/buttonForComments"
-            android:layout_width="132dp"
-            android:layout_height="wrap_content"
-            android:text="Save note" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/block2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_weight="1">
 
-
-        <Button
-            android:id="@+id/buttonForSendServer"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Synchro" />
+            android:text="Data from the server about the activity"
+            android:layout_weight = "1"
+            android:textSize="18sp"
+            android:layout_margin="16dp"
+            />
+
+        <EditText
+            android:id="@+id/activityDataEditText"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:inputType="none"
+            android:minWidth="140dp"
+            android:text="Information will be displayed here" />
+
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/block3"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:text="Data from the server about the confidence"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/confidenceDataEditText"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:inputType="none"
+            android:minWidth="140dp"
+            android:text="Information will be displayed here" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/block4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data from the server about steps count"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:layout_margin="16dp"/>
+
+        <EditText
+            android:id="@+id/stepsDataEditText"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:inputType="none"
+            android:minWidth="140dp"
+            android:text="Information will be displayed here" />
+
+
     </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/block5"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center_vertical"
+    >
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Start"
+            android:layout_marginEnd="4dp"
+            />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stop"
+            android:layout_marginStart="4dp"
+            />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/block6"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -83,7 +176,7 @@
         android:id="@+id/_temp2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
         android:orientation="vertical">
 
     </LinearLayout>

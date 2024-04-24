@@ -9,9 +9,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // This class is responsible for writing logs to a file.
 public class LoggerManager {
+    private static final Logger LOGGER = Logger.getLogger(LoggerManager.class.getName());
+
 
     // This method writes a message to a log file.
     // synchronized to prevent concurrent access
@@ -35,7 +39,7 @@ public class LoggerManager {
                 buf.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 }

@@ -1,31 +1,36 @@
 package com.example.stepcounter;
 
 import android.annotation.SuppressLint;
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import java.util.Arrays;
+import android.os.IBinder;
+import android.text.TextUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 // This class is responsible for managing the back sensors.
 public class BackSensorsManager extends Service implements SensorEventListener {
 
     // Sensor manager
     private SensorManager sensorManager;
-    long startTime;
-    
+    SimpleDateFormat sdf;
+
     // This method is called when the service is created.
-    @SuppressLint("ForegroundServiceType")
+    @SuppressLint({"ForegroundServiceType", "SimpleDateFormat"})
     @Override
     public void onCreate() {
-        startTime = System.currentTimeMillis();
+        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
         super.onCreate();
 
         // Create a notification channel
@@ -59,10 +64,6 @@ public class BackSensorsManager extends Service implements SensorEventListener {
 
         // Register the step counter sensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager != null) {
-            Sensor stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
 
         // Register the sensors and set the sampling rate
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -71,6 +72,7 @@ public class BackSensorsManager extends Service implements SensorEventListener {
         Sensor magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
         // Register the accelerometer sensor
+        // SENSOR_DELAY_GAME
         if (accelerometer != null) {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
         }
@@ -85,7 +87,6 @@ public class BackSensorsManager extends Service implements SensorEventListener {
             sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
         }
     }
-
 
     //  This method is called when the service is started.
     @Override
@@ -103,9 +104,18 @@ public class BackSensorsManager extends Service implements SensorEventListener {
     // This method is called when the sensor value changes.
     @Override
     public void onSensorChanged(SensorEvent event) {
-        String data = (System.currentTimeMillis() - startTime) + ", " + FrontSensorsManager.getSensorName(getApplicationContext(), event.sensor.getType()) + ", " + Arrays.toString(event.values);
+        // Converting float[] to String[]
+        String[] stringValues = new String[event.values.length];
+        for (int i = 0; i < event.values.length; i++) {
+            stringValues[i] = String.valueOf(event.values[i]);
+        }
+
+        // Using TextUtils.join() to create a comma-separated values string
+        String data = sdf.format(new Date()) + ", " + FrontSensorsManager.getSensorName(getApplicationContext(), event.sensor.getType()) + ", " + TextUtils.join(", ", stringValues);
         FilesManager.writeToFile(getApplicationContext(), "SensorData.txt", data);
+        FilesManager.writeToFile(getApplicationContext(), "SensorTrainingData.txt", data);
     }
+
 
     // This method is called when the accuracy of the sensor has changed.
     @Override
